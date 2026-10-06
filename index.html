@@ -3,275 +3,668 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AI Builder Studio</title>
+    <title>AI Builder Studio | Modern Commerce</title>
     <meta
       name="description"
-      content="AI Builder Studio - prompt to website generator with workflow automation, progress tracking, preview, and publish flow."
+      content="AI Builder Studio - prompt to product workflow with modern ecommerce storefront."
     />
     <style>
       :root {
-        --bg: #07111f;
-        --bg2: #0d1830;
-        --panel: rgba(15, 23, 42, 0.7);
-        --panel-soft: rgba(15, 23, 42, 0.55);
-        --card: rgba(17, 24, 39, 0.8);
+        --bg: #06111f;
+        --bg-strong: #0b1730;
+        --surface: rgba(15, 23, 42, 0.76);
+        --surface-strong: rgba(15, 23, 42, 0.92);
+        --card: rgba(17, 24, 39, 0.92);
         --card-border: rgba(148, 163, 184, 0.18);
-        --text: #e5eefb;
-        --muted: #a5b4cf;
+        --text: #eaf3ff;
+        --muted: #a7bad9;
         --primary: #7c3aed;
-        --secondary: #1ea5ff;
+        --primary-2: #1ea5ff;
         --success: #34d399;
         --warning: #f59e0b;
         --danger: #ef4444;
-        --shadow: 0 25px 60px rgba(15, 23, 42, 0.5);
+        --shadow: 0 28px 60px rgba(5, 10, 20, 0.45);
       }
 
       * { box-sizing: border-box; }
-      html, body {
-        margin: 0;
-        min-height: 100%;
-        font-family: Inter, "Segoe UI", sans-serif;
-        background: radial-gradient(circle at top, #13233e 0%, #07111f 40%, #040b16 100%);
-        color: var(--text);
-      }
+      html { scroll-behavior: smooth; }
       body {
-        min-height: 100vh;
-      }
-      textarea, button {
-        font: inherit;
-      }
-      a { color: #cfe4ff; }
-
-      .page-shell {
-        min-height: 100vh;
-        display: grid;
-        grid-template-columns: 320px 1fr;
-      }
-
-      .sidebar {
-        background: rgba(15, 23, 42, 0.9);
-        border-right: 1px solid var(--card-border);
-        padding: 28px 20px;
-      }
-
-      .logo-wrap {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        margin-bottom: 26px;
-      }
-
-      .logo {
-        width: 48px;
-        height: 48px;
-        display: grid;
-        place-items: center;
-        border-radius: 14px;
-        background: linear-gradient(135deg, var(--primary), var(--secondary));
-        font-weight: 800;
-        box-shadow: var(--shadow);
-      }
-
-      .eyebrow {
-        margin: 0 0 6px;
-        color: var(--muted);
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        font-size: 11px;
-      }
-
-      h1, h2, h3, p {
         margin: 0;
-      }
-
-      .ai-card,
-      .panel,
-      .prompt-panel,
-      .workflow-panel,
-      .result-panel {
-        background: rgba(15, 23, 42, 0.7);
-        border: 1px solid var(--card-border);
-        border-radius: 18px;
-        box-shadow: var(--shadow);
-      }
-
-      .ai-card {
-        padding: 18px 16px;
-        margin-bottom: 18px;
-      }
-
-      .status-line {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        font-weight: 600;
-      }
-
-      .dot {
-        display: inline-block;
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background: var(--success);
-      }
-
-      .pulse {
-        box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.7);
-        animation: pulse 1.7s infinite;
-      }
-
-      @keyframes pulse {
-        0% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.7); }
-        70% { box-shadow: 0 0 0 12px rgba(52, 211, 153, 0); }
-        100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0); }
-      }
-
-      .small-text {
-        margin-top: 8px;
-        color: var(--muted);
-        font-size: 13px;
-      }
-
-      .panel {
-        padding: 18px 16px;
-        margin-top: 18px;
-      }
-
-      .panel-title {
-        font-weight: 700;
-        margin-bottom: 12px;
-      }
-
-      .file-list {
-        margin: 0;
-        padding-left: 18px;
-        color: var(--muted);
-        line-height: 1.8;
-      }
-
-      .build-state {
-        border-radius: 12px;
-        background: rgba(124, 58, 237, 0.14);
-        border: 1px solid rgba(124, 58, 237, 0.3);
-        padding: 10px 12px;
-        font-weight: 700;
+        min-height: 100vh;
+        font-family: Inter, "Segoe UI", sans-serif;
+        background: radial-gradient(circle at top left, #11264d 0%, #091827 25%, #050d18 80%);
         color: var(--text);
-        letter-spacing: 0.08em;
       }
 
-      .workspace {
-        padding: 28px;
+      a { color: inherit; text-decoration: none; }
+      button, input, textarea { font: inherit; }
+      img { max-width: 100%; display: block; }
+
+      .shell {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
       }
 
-      .workspace-header {
+      .topbar {
+        position: sticky;
+        top: 20px;
+        z-index: 20;
         display: flex;
         align-items: center;
         justify-content: space-between;
         gap: 18px;
-        margin-bottom: 18px;
-      }
-
-      .workspace-header h2 {
-        font-size: clamp(2rem, 3vw, 3rem);
-      }
-
-      .workspace-actions {
-        display: flex;
-        gap: 12px;
-      }
-
-      .primary, .secondary, .generate-btn {
-        border: none;
-        border-radius: 14px;
-        padding: 12px 18px;
-        font-weight: 700;
-        cursor: pointer;
-        transition: transform 0.18s ease, opacity 0.18s ease;
-      }
-
-      .primary, .generate-btn {
-        background: linear-gradient(135deg, var(--primary), var(--secondary));
-        color: #fff;
-        box-shadow: 0 15px 28px rgba(124, 58, 237, 0.28);
-      }
-
-      .secondary {
-        background: rgba(148, 163, 184, 0.12);
-        color: var(--text);
+        padding: 16px 20px;
+        background: rgba(10, 18, 30, 0.7);
         border: 1px solid var(--card-border);
+        border-radius: 22px;
+        backdrop-filter: blur(12px);
+        box-shadow: var(--shadow);
       }
 
-      .primary:hover, .secondary:hover, .generate-btn:hover {
-        transform: translateY(-1px);
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 14px;
       }
 
-      .prompt-panel {
-        padding: 20px 22px;
+      .brand-mark {
+        width: 42px;
+        height: 42px;
+        display: grid;
+        place-items: center;
+        border-radius: 14px;
+        background: linear-gradient(135deg, var(--primary), var(--primary-2));
+        font-weight: 800;
+        color: white;
       }
 
-      .prompt-label {
+      .brand-text small {
         display: block;
-        margin-bottom: 12px;
+        font-size: 10px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .brand-text strong {
+        display: block;
+        font-size: 1rem;
+      }
+
+      .nav {
+        display: flex;
+        align-items: center;
+        gap: 22px;
         color: var(--muted);
         font-weight: 600;
       }
 
-      textarea {
-        width: 100%;
-        background: rgba(15, 23, 42, 0.8);
-        border: 1px solid var(--card-border);
-        border-radius: 16px;
-        color: var(--text);
-        padding: 16px;
-        resize: vertical;
-        min-height: 170px;
+      .nav a:hover { color: var(--text); }
+
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
       }
 
-      .controls-row {
+      .ghost-btn, .primary-btn, .cart-btn, .small-btn {
+        border: none;
+        border-radius: 12px;
+        padding: 11px 16px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.2s ease;
+      }
+
+      .ghost-btn {
+        background: rgba(148,163,184,0.1);
+        color: var(--text);
+        border: 1px solid var(--card-border);
+      }
+
+      .primary-btn {
+        background: linear-gradient(135deg, var(--primary), var(--primary-2));
+        color: white;
+        box-shadow: 0 18px 28px rgba(124, 58, 237, 0.3);
+      }
+
+      .cart-btn {
+        background: rgba(245, 158, 11, 0.12);
+        color: var(--text);
+        border: 1px solid rgba(245,158,11,0.22);
+      }
+
+      .small-btn {
+        padding: 8px 12px;
+        background: rgba(124,58,237,0.12);
+        color: #dcd0ff;
+        border: 1px solid rgba(124,58,237,0.24);
+      }
+
+      .ghost-btn:hover, .primary-btn:hover, .cart-btn:hover, .small-btn:hover {
+        transform: translateY(-1px);
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 36px;
+        align-items: center;
+        padding: 48px 0 20px;
+      }
+
+      .eyebrow-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(124, 58, 237, 0.14);
+        border: 1px solid rgba(124, 58, 237, 0.22);
+        color: #d1c4ff;
+        letter-spacing: 0.12em;
+        font-size: 11px;
+        text-transform: uppercase;
+        font-weight: 800;
+      }
+
+      h1 {
+        margin: 18px 0 12px;
+        font-size: clamp(2.7rem, 6vw, 5rem);
+        line-height: 0.95;
+        letter-spacing: -0.06em;
+      }
+
+      .subcopy {
+        max-width: 620px;
+        font-size: 1.05rem;
+        line-height: 1.7;
+        color: var(--muted);
+      }
+
+      .cta-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-top: 28px;
+      }
+
+      .stats-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 22px;
+        margin-top: 30px;
+      }
+
+      .stat-item {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .stat-item strong {
+        font-size: 1.6rem;
+      }
+
+      .stat-item span {
+        color: var(--muted);
+      }
+
+      .hero-visual {
+        display: flex;
+        justify-content: center;
+      }
+
+      .product-stage {
+        position: relative;
+        width: min(95%, 500px);
+        height: 480px;
+        border-radius: 34px;
+        background: linear-gradient(160deg, rgba(124,58,237,0.25), rgba(30,165,255,0.12));
+        border: 1px solid rgba(255,255,255,0.15);
+        box-shadow: var(--shadow);
+        transform: perspective(1200px) rotateY(-12deg) rotateX(8deg);
+        overflow: hidden;
+      }
+
+      .orb {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(32px);
+      }
+
+      .orb.one {
+        width: 220px;
+        height: 220px;
+        top: 16%;
+        right: 10%;
+        background: rgba(245,158,11,0.6);
+      }
+
+      .orb.two {
+        width: 240px;
+        height: 240px;
+        left: 8%;
+        bottom: 10%;
+        background: rgba(30,165,255,0.5);
+      }
+
+      .device {
+        position: absolute;
+        inset: 18% 12% 14% 12%;
+        border-radius: 28px;
+        background: linear-gradient(135deg, rgba(255,255,255,0.38), rgba(124,58,237,0.15));
+        border: 1px solid rgba(255,255,255,0.32);
+        box-shadow: inset 0 0 18px rgba(255,255,255,0.16);
+      }
+
+      .device::before {
+        content: "";
+        position: absolute;
+        left: 18%;
+        right: 18%;
+        top: 16%;
+        bottom: 20%;
+        border-radius: 18px;
+        background: linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0.08));
+      }
+
+      .device-card {
+        position: absolute;
+        left: 24px;
+        right: 24px;
+        bottom: 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
+        gap: 10px;
+      }
+
+      .device-card strong {
+        font-size: 2rem;
+      }
+
+      .device-card span {
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-size: 10px;
+      }
+
+      .section-head {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 16px;
+        margin: 28px 0 18px;
+      }
+
+      .section-head h3 {
+        font-size: clamp(1.6rem, 3vw, 2.6rem);
+      }
+
+      .product-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 22px;
+      }
+
+      .product-card {
+        background: rgba(15, 23, 42, 0.72);
+        border: 1px solid var(--card-border);
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+      }
+
+      .product-image {
+        height: 210px;
+        background: linear-gradient(135deg, rgba(124,58,237,0.5), rgba(30,165,255,0.5));
+        position: relative;
+      }
+
+      .product-image::before {
+        content: "";
+        position: absolute;
+        inset: 18% 24%;
+        border-radius: 22px;
+        background: linear-gradient(135deg, rgba(255,255,255,0.35), rgba(255,255,255,0.12));
+        box-shadow: inset 0 0 18px rgba(255,255,255,0.14);
+      }
+
+      .product-image.alt-1 { background: linear-gradient(135deg, rgba(52,211,153,0.5), rgba(30,165,255,0.5)); }
+      .product-image.alt-2 { background: linear-gradient(135deg, rgba(245,158,11,0.52), rgba(239,68,68,0.48)); }
+      .product-image.alt-3 { background: linear-gradient(135deg, rgba(168,85,247,0.46), rgba(124,58,237,0.45)); }
+      .product-image.alt-4 { background: linear-gradient(135deg, rgba(45,212,191,0.52), rgba(14,165,233,0.5)); }
+
+      .product-body {
+        padding: 18px 18px 16px;
+      }
+
+      .product-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        color: var(--muted);
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .product-body h4 {
+        margin-top: 12px;
+        font-size: 1.3rem;
+      }
+
+      .price-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-top: 16px;
+      }
+
+      .price-row strong {
+        font-size: 1.35rem;
+      }
+
+      .add-btn {
+        padding: 9px 12px;
+        border-radius: 10px;
+        background: rgba(124,58,237,0.12);
+        border: 1px solid rgba(124,58,237,0.2);
+        color: #d8d3ff;
+        cursor: pointer;
+      }
+
+      .promo-row {
+        display: grid;
+        grid-template-columns: 1.3fr 1fr;
+        gap: 22px;
+        margin-top: 34px;
+      }
+
+      .promo-card {
+        padding: 24px;
+        border-radius: 28px;
+        background: linear-gradient(135deg, rgba(17,24,39,0.9), rgba(124,58,237,0.12));
+        border: 1px solid var(--card-border);
+        box-shadow: var(--shadow);
+      }
+
+      .promo-card.highlight {
+        background: linear-gradient(135deg, rgba(255,191,105,0.18), rgba(255,255,255,0.04));
+      }
+
+      .promo-card h4 {
+        font-size: clamp(1.5rem, 3vw, 2.2rem);
+        margin-top: 8px;
+      }
+
+      .promo-card p {
+        margin-top: 12px;
+        line-height: 1.7;
+        color: var(--muted);
+      }
+
+      .dashboard {
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 22px;
+        margin-top: 36px;
+      }
+
+      .panel-box {
+        background: rgba(15, 23, 42, 0.72);
+        border: 1px solid var(--card-border);
+        border-radius: 24px;
+        padding: 20px;
+        box-shadow: var(--shadow);
+      }
+
+      .admin-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .mini-stat {
+        padding: 16px;
+        border-radius: 16px;
+        background: rgba(148,163,184,0.06);
+        border: 1px solid var(--card-border);
+      }
+
+      .mini-stat span {
+        color: var(--muted);
+        font-size: 11px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .mini-stat strong {
+        display: block;
+        margin-top: 10px;
+        font-size: 1.8rem;
+      }
+
+      .order-list {
+        margin-top: 18px;
+        display: grid;
+        gap: 10px;
+      }
+
+      .order-item {
         display: flex;
         justify-content: space-between;
         align-items: center;
         gap: 12px;
-        margin-top: 14px;
+        padding: 12px 14px;
+        border-radius: 14px;
+        background: rgba(148,163,184,0.04);
+        border: 1px solid var(--card-border);
       }
 
-      .helper-block {
+      .order-item small {
         color: var(--muted);
-        font-size: 13px;
       }
 
-      .workflow-panel {
-        margin-top: 24px;
-        padding: 20px 22px;
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 6px 8px;
+        border-radius: 999px;
+        background: rgba(52,211,153,0.12);
+        color: #b7ffd9;
+        border: 1px solid rgba(52,211,153,0.2);
+        font-size: 11px;
+        font-weight: 700;
+      }
+
+      .badge.warning {
+        background: rgba(245,158,11,0.12);
+        color: #fde7ad;
+        border-color: rgba(245,158,11,0.2);
+      }
+
+      .cart-panel {
+        position: fixed;
+        right: 24px;
+        top: 90px;
+        width: min(390px, calc(100vw - 28px));
+        background: var(--surface-strong);
+        border: 1px solid var(--card-border);
+        border-radius: 24px;
+        box-shadow: var(--shadow);
+        transform: translateX(120%);
+        transition: transform 0.3s ease;
+        z-index: 30;
+        padding: 18px;
+      }
+
+      .cart-panel.open { transform: translateX(0); }
+
+      .cart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .close-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background: rgba(148,163,184,0.12);
+        border: 1px solid var(--card-border);
+        color: var(--text);
+        cursor: pointer;
+      }
+
+      .cart-items {
+        margin-top: 18px;
+        display: grid;
+        gap: 12px;
+      }
+
+      .cart-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 12px;
+        border-radius: 14px;
+        background: rgba(148,163,184,0.06);
+        border: 1px solid var(--card-border);
+      }
+
+      .cart-item small { color: var(--muted); }
+
+      .empty-state {
+        padding: 20px 12px;
+        text-align: center;
+        color: var(--muted);
+      }
+
+      .cart-summary {
+        margin-top: 18px;
+        padding-top: 16px;
+        border-top: 1px solid var(--card-border);
+      }
+
+      .total-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 14px;
+      }
+
+      .modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(2, 5, 12, 0.5);
+        display: grid;
+        place-items: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: 0.2s ease;
+        z-index: 40;
+      }
+
+      .modal.show {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .modal-box {
+        width: min(440px, calc(100vw - 24px));
+        background: var(--surface-strong);
+        border: 1px solid var(--card-border);
+        border-radius: 22px;
+        box-shadow: var(--shadow);
+        padding: 18px;
+      }
+
+      .modal-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .auth-form {
+        display: grid;
+        gap: 14px;
+        margin-top: 16px;
+      }
+
+      .auth-form label {
+        display: grid;
+        gap: 8px;
+        color: var(--muted);
+        font-weight: 600;
+      }
+
+      .auth-form input {
+        padding: 12px 14px;
+        border-radius: 12px;
+        border: 1px solid var(--card-border);
+        background: rgba(148,163,184,0.04);
+        color: var(--text);
+      }
+
+      .toast {
+        position: fixed;
+        right: 24px;
+        bottom: 26px;
+        padding: 12px 16px;
+        border-radius: 12px;
+        background: rgba(15, 23, 42, 0.95);
+        border: 1px solid var(--card-border);
+        color: var(--text);
+        box-shadow: var(--shadow);
+        opacity: 0;
+        transform: translateY(12px);
+        transition: 0.2s ease;
+        z-index: 50;
+      }
+
+      .toast.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .builder-wrap {
+        margin-top: 42px;
+        background: rgba(15,23,42,0.7);
+        border: 1px solid var(--card-border);
+        border-radius: 28px;
+        padding: 20px;
+        box-shadow: var(--shadow);
       }
 
       .workflow-head {
         display: flex;
-        align-items: center;
         justify-content: space-between;
+        align-items: center;
         gap: 12px;
       }
 
-      .workflow-title {
-        font-weight: 700;
-      }
-
-      .phase-pill, .status-badge {
+      .phase-badge {
+        padding: 8px 12px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         border-radius: 999px;
-        padding: 7px 12px;
+        background: rgba(52,211,153,0.12);
+        color: #baf8d5;
+        border: 1px solid rgba(52,211,153,0.2);
+        letter-spacing: 0.08em;
         font-size: 11px;
-        letter-spacing: 0.1em;
         font-weight: 800;
         text-transform: uppercase;
-      }
-
-      .phase-pill {
-        background: rgba(34, 197, 94, 0.12);
-        color: #9ae6b4;
-        border: 1px solid rgba(34, 197, 94, 0.25);
       }
 
       .progress-steps {
@@ -282,242 +675,409 @@
       }
 
       .step {
-        background: rgba(148, 163, 184, 0.08);
-        border: 1px solid rgba(148, 163, 184, 0.14);
-        color: var(--muted);
-        border-radius: 10px;
-        text-align: center;
         padding: 10px 8px;
+        text-align: center;
+        border-radius: 10px;
         font-size: 9px;
-        letter-spacing: 0.06em;
+        letter-spacing: 0.07em;
+        color: var(--muted);
+        background: rgba(148,163,184,0.06);
+        border: 1px solid rgba(148,163,184,0.12);
         font-weight: 700;
       }
 
       .step.active {
-        background: rgba(124, 58, 237, 0.12);
-        border-color: rgba(124, 58, 237, 0.35);
-        color: #d7c7ff;
+        background: rgba(124,58,237,0.12);
+        border-color: rgba(124,58,237,0.24);
+        color: #ddceff;
       }
 
       .progress-log {
         margin: 18px 0 0;
-        padding-left: 20px;
-        color: var(--muted);
+        padding-left: 18px;
         line-height: 1.9;
-      }
-
-      .result-panel {
-        margin-top: 24px;
-        padding: 22px;
-      }
-
-      .result-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 12px;
-      }
-
-      .result-grid {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 16px;
-        margin-top: 16px;
-      }
-
-      .result-box {
-        background: rgba(15, 23, 42, 0.62);
-        border: 1px solid var(--card-border);
-        border-radius: 16px;
-        padding: 18px;
-      }
-
-      .mini-label {
         color: var(--muted);
-        font-size: 12px;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        margin-bottom: 12px;
       }
 
-      .tag-list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-      }
-
-      .tag-list span {
-        background: rgba(59, 130, 246, 0.12);
-        border: 1px solid rgba(96, 165, 250, 0.2);
-        border-radius: 999px;
-        padding: 7px 10px;
-        font-size: 12px;
-        color: #cfe4ff;
-      }
-
-      .result-link {
-        color: #cfe4ff;
-        text-decoration: none;
-        word-break: break-all;
-      }
-
-      .status-badge.idle { background: rgba(148, 163, 184, 0.12); color: var(--muted); }
-      .status-badge.ready { background: rgba(52, 211, 153, 0.12); color: #c8f9de; }
-      .status-badge.error { background: rgba(239, 68, 68, 0.12); color: #fecaca; }
-
-      @media (max-width: 1024px) {
-        .page-shell { grid-template-columns: 1fr; }
-        .sidebar {
-          border-right: none;
-          border-bottom: 1px solid var(--card-border);
-        }
-      }
-
-      @media (max-width: 720px) {
-        .workspace { padding: 18px; }
-        .workspace-header,
-        .controls-row,
-        .workflow-head,
-        .result-header {
-          flex-direction: column;
-          align-items: flex-start;
-        }
-        .progress-steps,
-        .result-grid {
+      @media (max-width: 1100px) {
+        .nav { display: none; }
+        .hero, .dashboard, .promo-row, .product-grid {
           grid-template-columns: 1fr 1fr;
+        }
+        .hero { grid-template-columns: 1fr; }
+      }
+
+      @media (max-width: 760px) {
+        .topbar { flex-wrap: wrap; justify-content: center; }
+        .workspace-actions { width: 100%; justify-content: center; }
+        .product-grid, .promo-row, .dashboard, .progress-steps {
+          grid-template-columns: 1fr;
         }
       }
     </style>
   </head>
   <body>
-    <div class="page-shell">
-      <aside class="sidebar">
-        <div class="logo-wrap">
-          <div class="logo">AI</div>
+    <div class="shell">
+      <header class="topbar">
+        <div class="brand" aria-label="Brand">
+          <div class="brand-mark">AI</div>
+          <div class="brand-text">
+            <small>Builder Studio</small>
+            <strong>Project AI</strong>
+          </div>
+        </div>
+
+        <nav class="nav" aria-label="Main navigation">
+          <a href="#home">Home</a>
+          <a href="#shop">Shop</a>
+          <a href="#collections">Collections</a>
+          <a href="#admin">Admin</a>
+          <a href="#support">Support</a>
+        </nav>
+
+        <div class="header-actions">
+          <button class="ghost-btn" id="themeToggle" type="button">Dark mode</button>
+          <button class="ghost-btn" id="openLogin" type="button">Login</button>
+          <button class="cart-btn" id="openCart" type="button">Cart <span id="cartCount">0</span></button>
+        </div>
+      </header>
+
+      <main id="home">
+        <section class="hero">
           <div>
-            <p class="eyebrow">Builder Studio</p>
-            <h1>Project AI</h1>
+            <div class="eyebrow-pill">New collection</div>
+            <h1>Built for people who want more.</h1>
+            <p class="subcopy">
+              AI Builder Studio generates modern storefronts, admin dashboards, payment flows,
+              cart logic, and premium product experiences from a single prompt.
+            </p>
+            <div class="cta-row">
+              <button class="primary-btn" type="button">Shop now</button>
+              <button class="ghost-btn" type="button">View catalog</button>
+            </div>
+            <div class="stats-row">
+              <div class="stat-item">
+                <strong>24k+</strong>
+                <span>buyers</span>
+              </div>
+              <div class="stat-item">
+                <strong>4.9/5</strong>
+                <span>rating</span>
+              </div>
+              <div class="stat-item">
+                <strong>2-day</strong>
+                <span>shipment</span>
+              </div>
+            </div>
           </div>
-        </div>
 
-        <div class="ai-card">
-          <div class="status-line">
-            <span class="dot pulse"></span>
-            <span>System ready</span>
-          </div>
-          <p class="small-text">AI project context active</p>
-        </div>
-
-        <div class="panel">
-          <p class="panel-title">Project context</p>
-          <ul class="file-list">
-            <li>index.html</li>
-            <li>styles.css</li>
-            <li>app.js</li>
-            <li>workspace/project</li>
-          </ul>
-        </div>
-
-        <div class="panel">
-          <p class="panel-title">Build status</p>
-          <div id="buildState" class="build-state">IDLE</div>
-        </div>
-      </aside>
-
-      <main class="workspace">
-        <header class="workspace-header">
-          <div>
-            <p class="eyebrow">Prompt to product</p>
-            <h2>AI Website Generator</h2>
-          </div>
-          <div class="workspace-actions">
-            <button class="secondary" id="previewBtn" type="button">Preview</button>
-            <button class="primary" id="publishBtn" type="button">Publish</button>
-          </div>
-        </header>
-
-        <section class="prompt-panel">
-          <label for="promptInput" class="prompt-label">Jelaskan website atau aplikasi yang ingin kamu buat...</label>
-          <textarea id="promptInput" rows="8" placeholder="Jelaskan website atau aplikasi yang ingin kamu buat..."></textarea>
-          <div class="controls-row">
-            <div class="helper-block">Ctrl + Enter / Cmd + Enter untuk generate</div>
-            <button id="generateBtn" class="generate-btn" type="button">Generate</button>
+          <div class="hero-visual">
+            <div class="product-stage" aria-label="Featured product stage">
+              <div class="orb one"></div>
+              <div class="orb two"></div>
+              <div class="device"></div>
+              <div class="device-card">
+                <div>
+                  <span>Featured item</span>
+                  <div style="margin-top:8px;"><strong>Aurora Lamp</strong></div>
+                </div>
+                <strong>$199</strong>
+              </div>
+            </div>
           </div>
         </section>
 
-        <section class="workflow-panel">
-          <div class="workflow-head">
-            <span class="workflow-title">Workflow</span>
-            <span class="phase-pill" id="phaseLabel">ANALYZING</span>
+        <section id="shop">
+          <div class="section-head">
+            <div>
+              <div class="eyebrow-pill">Bestsellers</div>
+              <h3>Popular picks</h3>
+            </div>
+            <button class="ghost-btn" type="button">See all</button>
           </div>
 
-          <div class="progress-steps">
-            <div class="step active">ANALYZING</div>
-            <div class="step">PLANNING</div>
-            <div class="step">GENERATING</div>
-            <div class="step">WRITING FILES</div>
-            <div class="step">BUILDING</div>
-            <div class="step">TESTING</div>
-            <div class="step">FIXING ERRORS</div>
-            <div class="step">READY</div>
-          </div>
+          <div class="product-grid">
+            <article class="product-card">
+              <div class="product-image"></div>
+              <div class="product-body">
+                <div class="product-meta"><span>Electronics</span><span>4.9</span></div>
+                <h4>Nova Headphones</h4>
+                <div class="price-row">
+                  <strong>$189</strong>
+                  <button class="add-btn" data-name="Nova Headphones" data-price="189" type="button">Add</button>
+                </div>
+              </div>
+            </article>
 
-          <ul id="progressLog" class="progress-log">
-            <li>AI sedang menunggu prompt...</li>
-          </ul>
+            <article class="product-card">
+              <div class="product-image alt-1"></div>
+              <div class="product-body">
+                <div class="product-meta"><span>Furniture</span><span>4.8</span></div>
+                <h4>Terra Chair</h4>
+                <div class="price-row">
+                  <strong>$149</strong>
+                  <button class="add-btn" data-name="Terra Chair" data-price="149" type="button">Add</button>
+                </div>
+              </div>
+            </article>
+
+            <article class="product-card">
+              <div class="product-image alt-2"></div>
+              <div class="product-body">
+                <div class="product-meta"><span>Wearables</span><span>4.9</span></div>
+                <h4>Flex Watch</h4>
+                <div class="price-row">
+                  <strong>$239</strong>
+                  <button class="add-btn" data-name="Flex Watch" data-price="239" type="button">Add</button>
+                </div>
+              </div>
+            </article>
+
+            <article class="product-card">
+              <div class="product-image alt-3"></div>
+              <div class="product-body">
+                <div class="product-meta"><span>Audio</span><span>5.0</span></div>
+                <h4>Orbit Speaker</h4>
+                <div class="price-row">
+                  <strong>$129</strong>
+                  <button class="add-btn" data-name="Orbit Speaker" data-price="129" type="button">Add</button>
+                </div>
+              </div>
+            </article>
+          </div>
         </section>
 
-        <section class="result-panel">
-          <div class="result-header">
-            <h3>Project output</h3>
-            <span id="statusBadge" class="status-badge idle">IDLE</span>
+        <section class="promo-row" id="collections">
+          <div class="promo-card">
+            <div class="eyebrow-pill">Smart checkout</div>
+            <h4>Fast and secure payment flow</h4>
+            <p>
+              Support for card, e-wallet, QRIS, and bank transfer with a clean checkout journey
+              built to increase conversion.
+            </p>
           </div>
 
-          <div class="result-grid">
-            <div class="result-box">
-              <p class="mini-label">Files</p>
-              <div id="resultFiles" class="tag-list">
-                <span>index.html</span>
-                <span>styles.css</span>
-                <span>app.js</span>
+          <div class="promo-card highlight">
+            <div class="eyebrow-pill">Admin dashboard</div>
+            <h4>Order, stock, and revenue insights</h4>
+            <p>
+              Manage product catalogs, inventory, and order analytics with a premium admin experience.
+            </p>
+          </div>
+        </section>
+
+        <section class="dashboard" id="admin">
+          <div class="panel-box">
+            <div class="section-head" style="margin-top:0; margin-bottom:16px;">
+              <div>
+                <div class="eyebrow-pill">Analytics</div>
+                <h3>Admin overview</h3>
               </div>
             </div>
 
-            <div class="result-box">
-              <p class="mini-label">Preview URL</p>
-              <a id="previewLink" href="#" class="result-link">Not ready yet</a>
+            <div class="admin-grid">
+              <div class="mini-stat">
+                <span>Revenue</span>
+                <strong>$84.6k</strong>
+              </div>
+              <div class="mini-stat">
+                <span>Orders</span>
+                <strong>1,248</strong>
+              </div>
+              <div class="mini-stat">
+                <span>Conversion</span>
+                <strong>6.8%</strong>
+              </div>
             </div>
 
-            <div class="result-box">
-              <p class="mini-label">Publish URL</p>
-              <a id="publishLink" href="#" class="result-link">Not published</a>
+            <div class="order-list">
+              <div class="order-item">
+                <div>
+                  <strong>#SK-1024</strong><br />
+                  <small>Nova Headphones</small>
+                </div>
+                <span class="badge">Paid</span>
+              </div>
+              <div class="order-item">
+                <div>
+                  <strong>#SK-1025</strong><br />
+                  <small>Terra Chair</small>
+                </div>
+                <span class="badge warning">Processing</span>
+              </div>
+              <div class="order-item">
+                <div>
+                  <strong>#SK-1026</strong><br />
+                  <small>Orbit Speaker</small>
+                </div>
+                <span class="badge">Shipped</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel-box">
+            <div class="section-head" style="margin-top:0; margin-bottom:16px;">
+              <div>
+                <div class="eyebrow-pill">Builder</div>
+                <h3>AI workflow</h3>
+              </div>
+            </div>
+
+            <div class="builder-wrap">
+              <div class="workflow-head">
+                <span>Workflow status</span>
+                <span class="phase-badge" id="phaseBadge">ANALYZING</span>
+              </div>
+
+              <div class="progress-steps">
+                <div class="step active">ANALYZING</div>
+                <div class="step">PLANNING</div>
+                <div class="step">GENERATING</div>
+                <div class="step">WRITING FILES</div>
+                <div class="step">BUILDING</div>
+                <div class="step">TESTING</div>
+                <div class="step">FIXING ERRORS</div>
+                <div class="step">READY</div>
+              </div>
+
+              <ul id="progressLog" class="progress-log">
+                <li>AI sedang menunggu prompt...</li>
+              </ul>
             </div>
           </div>
         </section>
       </main>
     </div>
 
+    <aside class="cart-panel" id="cartPanel" aria-label="Shopping cart">
+      <div class="cart-header">
+        <h3>Shopping cart</h3>
+        <button class="close-btn" id="closeCart" type="button">×</button>
+      </div>
+      <div id="cartItems" class="cart-items">
+        <div class="empty-state">Your cart is empty.</div>
+      </div>
+      <div class="cart-summary">
+        <div class="total-row">
+          <span>Total</span>
+          <strong id="totalPrice">$0</strong>
+        </div>
+        <button class="primary-btn" style="width:100%;" id="checkoutBtn" type="button">Proceed to checkout</button>
+      </div>
+    </aside>
+
+    <div class="modal" id="loginModal" aria-modal="true" role="dialog">
+      <div class="modal-box">
+        <div class="modal-top">
+          <h3>Welcome back</h3>
+          <button class="close-btn" id="closeLogin" type="button">×</button>
+        </div>
+
+        <form class="auth-form">
+          <label>
+            Email
+            <input type="email" value="admin@shop.com" />
+          </label>
+          <label>
+            Password
+            <input type="password" value="••••••••" />
+          </label>
+          <button type="button" class="primary-btn" style="width:100%;">Sign in</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="toast" id="toast">Added to cart</div>
+
     <script>
-      const promptInput = document.getElementById('promptInput');
-      const generateBtn = document.getElementById('generateBtn');
-      const previewBtn = document.getElementById('previewBtn');
-      const publishBtn = document.getElementById('publishBtn');
-      const phaseLabel = document.getElementById('phaseLabel');
-      const buildState = document.getElementById('buildState');
-      const statusBadge = document.getElementById('statusBadge');
+      const cart = [];
+      const cartPanel = document.getElementById('cartPanel');
+      const cartItems = document.getElementById('cartItems');
+      const cartCount = document.getElementById('cartCount');
+      const totalPrice = document.getElementById('totalPrice');
+      const toast = document.getElementById('toast');
+      const loginModal = document.getElementById('loginModal');
+      const phaseBadge = document.getElementById('phaseBadge');
       const progressLog = document.getElementById('progressLog');
-      const resultFiles = document.getElementById('resultFiles');
-      const previewLink = document.getElementById('previewLink');
-      const publishLink = document.getElementById('publishLink');
       const steps = Array.from(document.querySelectorAll('.step'));
 
-      function updateStepState(activePhase) {
-        const phaseOrder = ['analyzing', 'planning', 'generating', 'writing_files', 'building', 'testing', 'fixing_errors', 'ready', 'error'];
-        steps.forEach(step => step.classList.remove('active'));
-        const index = phaseOrder.indexOf(activePhase);
-        if (index >= 0 && steps[index]) {
-          steps[index].classList.add('active');
+      function renderCart() {
+        if (!cart.length) {
+          cartItems.innerHTML = '<div class="empty-state">Your cart is empty.</div>';
+          cartCount.textContent = '0';
+          totalPrice.textContent = '$0';
+          return;
         }
+
+        cartItems.innerHTML = cart.map(item => `
+          <div class="cart-item">
+            <div>
+              <strong>${item.name}</strong><br />
+              <small>${item.qty} item</small>
+            </div>
+            <strong>$${item.price * item.qty}</strong>
+          </div>
+        `).join('');
+
+        const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+        cartCount.textContent = String(cart.reduce((sum, item) => sum + item.qty, 0));
+        totalPrice.textContent = '$' + subtotal;
+      }
+
+      function showToast(message) {
+        toast.textContent = message;
+        toast.classList.add('show');
+        clearTimeout(window.toastTimer);
+        window.toastTimer = setTimeout(() => toast.classList.remove('show'), 1600);
+      }
+
+      function addToCart(name, price) {
+        const existing = cart.find(item => item.name === name);
+        if (existing) existing.qty += 1;
+        else cart.push({ name, price, qty: 1 });
+        renderCart();
+        showToast('Added to cart');
+      }
+
+      document.querySelectorAll('.add-btn').forEach(button => {
+        button.addEventListener('click', () => {
+          addToCart(button.dataset.name, Number(button.dataset.price));
+        });
+      });
+
+      document.getElementById('openCart').addEventListener('click', () => {
+        cartPanel.classList.add('open');
+      });
+
+      document.getElementById('closeCart').addEventListener('click', () => {
+        cartPanel.classList.remove('open');
+      });
+
+      document.getElementById('checkoutBtn').addEventListener('click', () => {
+        showToast('Checkout started');
+        cartPanel.classList.remove('open');
+      });
+
+      document.getElementById('openLogin').addEventListener('click', () => {
+        loginModal.classList.add('show');
+      });
+
+      document.getElementById('closeLogin').addEventListener('click', () => {
+        loginModal.classList.remove('show');
+      });
+
+      document.getElementById('themeToggle').addEventListener('click', () => {
+        const body = document.body;
+        body.classList.toggle('dark-mode');
+        const isDark = body.classList.contains('dark-mode');
+        document.getElementById('themeToggle').textContent = isDark ? 'Light mode' : 'Dark mode';
+      });
+
+      function updateSteps(activePhase) {
+        const order = ['analyzing', 'planning', 'generating', 'writing_files', 'building', 'testing', 'fixing_errors', 'ready'];
+        steps.forEach(step => step.classList.remove('active'));
+        const idx = order.indexOf(activePhase);
+        if (idx >= 0 && steps[idx]) steps[idx].classList.add('active');
       }
 
       function addLog(message) {
@@ -526,97 +1086,102 @@
         progressLog.prepend(item);
       }
 
-      function setBuildState(value, cls = '') {
-        buildState.textContent = value;
-        buildState.className = 'build-state';
-        if (cls) buildState.classList.add(cls);
-      }
+      function simulateWorkflow() {
+        const prompt = document.querySelector('#promptInput');
+        if (!prompt) return;
 
-      function simulateGenerate() {
-        const prompt = (promptInput.value || '').trim();
-        if (!prompt) {
+        const text = (prompt.value || '').trim();
+        if (!text) {
           alert('Silakan masukkan deskripsi website atau aplikasi yang ingin dibuat.');
           return;
         }
 
-        generateBtn.disabled = true;
-        generateBtn.textContent = 'Generating...';
-        phaseLabel.textContent = 'ANALYZING';
-        statusBadge.textContent = 'ANALYZING';
-        statusBadge.className = 'status-badge idle';
-        buildState.textContent = 'ANALYZING';
-        resultFiles.innerHTML = '';
-        addLog('AI sedang menganalisis kebutuhan pengguna...');
-
         const phases = [
+          { phase: 'analyzing', text: 'AI sedang menganalisis kebutuhan pengguna...' },
           { phase: 'planning', text: 'Membuat struktur project dan alur fitur...' },
           { phase: 'generating', text: 'AI membuat layout storefront modern...' },
           { phase: 'writing_files', text: 'Menulis file project ke workspace aktif...' },
-          { phase: 'building', text: 'Menjalankan validasi build dan pemeriksaan sintaks...' },
-          { phase: 'testing', text: 'Menguji hasil halaman dan fungsionalitas utama...' },
+          { phase: 'building', text: 'Menjalankan validasi build dan pengecekan sintaks...' },
+          { phase: 'testing', text: 'Menguji halaman dan fitur utama...' },
           { phase: 'ready', text: 'Project siap di preview dan publish.' }
         ];
 
-        let index = 0;
+        phaseBadge.textContent = 'ANALYZING';
+        progressLog.innerHTML = '';
+        addLog('AI sedang menunggu prompt...');
+
+        let idx = 0;
         const timer = setInterval(() => {
-          if (index < phases.length) {
-            const current = phases[index];
-            phaseLabel.textContent = current.phase.toUpperCase();
+          if (idx < phases.length) {
+            const current = phases[idx];
+            phaseBadge.textContent = current.phase.toUpperCase();
+            updateSteps(current.phase);
             addLog(current.text);
-            updateStepState(current.phase);
-            index += 1;
-
-            if (current.phase === 'ready') {
-              statusBadge.textContent = 'READY';
-              statusBadge.className = 'status-badge ready';
-              setBuildState('READY', 'ready');
-
-              ['index.html', 'styles.css', 'app.js', 'README.md'].forEach(file => {
-                const tag = document.createElement('span');
-                tag.textContent = file;
-                resultFiles.appendChild(tag);
-              });
-
-              previewLink.href = 'https://example.com/preview';
-              previewLink.textContent = 'https://example.com/preview';
-
-              publishLink.href = 'https://project-demo.platform-domain.com';
-              publishLink.textContent = 'https://project-demo.platform-domain.com';
-            }
+            idx += 1;
           } else {
             clearInterval(timer);
-            generateBtn.disabled = false;
-            generateBtn.textContent = 'Generate';
+            showToast('AI generated successfully');
           }
         }, 1200);
       }
 
-      function handlePreview() {
-        const url = 'https://example.com/preview';
-        previewLink.href = url;
-        previewLink.textContent = url;
-        window.open(url, '_blank', 'noopener,noreferrer');
-      }
+      const promptInput = document.createElement('textarea');
+      promptInput.id = 'promptInput';
+      promptInput.rows = 7;
+      promptInput.placeholder = 'Jelaskan website atau aplikasi yang ingin kamu buat...';
+      promptInput.style.width = '100%';
+      promptInput.style.marginTop = '18px';
+      promptInput.style.marginBottom = '16px';
+      promptInput.style.borderRadius = '16px';
+      promptInput.style.border = '1px solid rgba(148,163,184,0.18)';
+      promptInput.style.background = 'rgba(15,23,42,0.72)';
+      promptInput.style.color = 'var(--text)';
+      promptInput.style.padding = '16px';
+      promptInput.style.resize = 'vertical';
 
-      function handlePublish() {
-        const url = 'https://project-demo.platform-domain.com';
-        publishLink.href = url;
-        publishLink.textContent = url;
-        addLog('Deployment berhasil dipublish.');
-      }
+      const genWrap = document.createElement('div');
+      genWrap.style.marginTop = '24px';
+      genWrap.style.display = 'flex';
+      genWrap.style.justifyContent = 'space-between';
+      genWrap.style.gap = '12px';
+      genWrap.style.alignItems = 'center';
+      genWrap.style.flexWrap = 'wrap';
+      genWrap.innerHTML = '<div style="color:var(--muted); font-size:13px;">Ctrl + Enter / Cmd + Enter = Generate</div>';
 
-      generateBtn.addEventListener('click', simulateGenerate);
-      previewBtn.addEventListener('click', handlePreview);
-      publishBtn.addEventListener('click', handlePublish);
+      const generateBtn = document.createElement('button');
+      generateBtn.type = 'button';
+      generateBtn.className = 'primary-btn';
+      generateBtn.textContent = 'Generate';
+      generateBtn.addEventListener('click', simulateWorkflow);
+      genWrap.appendChild(generateBtn);
 
+      const builderBlock = document.createElement('div');
+      builderBlock.style.marginTop = '32px';
+      builderBlock.style.padding = '20px';
+      builderBlock.style.background = 'rgba(15, 23, 42, 0.72)';
+      builderBlock.style.borderRadius = '20px';
+      builderBlock.style.border = '1px solid var(--card-border)';
+      builderBlock.style.boxShadow = 'var(--shadow)';
+      builderBlock.innerHTML = `
+        <div style="display:flex; justify-content:space-between; gap:12px; align-items:center; margin-bottom:16px;">
+          <div>
+            <div class="eyebrow-pill" style="margin-bottom:8px;">Prompt to product</div>
+            <h3 style="font-size:1.6rem; margin:0;">AI builder workflow</h3>
+          </div>
+          <button class="primary-btn" id="quickGen" type="button">Generate</button>
+        </div>
+      `;
+      builderBlock.appendChild(promptInput);
+      builderBlock.appendChild(genWrap);
+      document.querySelector('.dashboard').appendChild(builderBlock);
+      document.getElementById('quickGen').addEventListener('click', simulateWorkflow);
       promptInput.addEventListener('keydown', (event) => {
         if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
-          simulateGenerate();
+          simulateWorkflow();
         }
       });
 
-      setBuildState('IDLE');
-      updateStepState('analyzing');
+      renderCart();
     </script>
   </body>
 </html>
