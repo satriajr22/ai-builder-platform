@@ -9,6 +9,14 @@ const CLASS_DATA = {
     "Witch": {"hp": 92, "mana": 22, "attack": 18, "defense": 4, "speed": 10},
 }
 
+var party: Array = []
+var enemies: Array = []
+var battle_over: bool = false
+var current_turn: int = 1
+var log_lines: Array = []
+var character_meshes: Dictionary = {}
+var selected_region: String = "Crystal Ruins"
+
 @onready var camera = $Camera3D
 @onready var player_spawn = $Arena/PlayerTeamSpawn
 @onready var enemy_spawn = $Arena/EnemyTeamSpawn
@@ -21,14 +29,8 @@ const CLASS_DATA = {
 @onready var auto_btn = $UI/ControlPanel/VBoxContainer/AutoBtn
 @onready var stats_vbox = $UI/StatsPanelUI/StatsVBox
 
-var party: Array = []
-var enemies: Array = []
-var battle_over: bool = false
-var current_turn: int = 1
-var log_lines: Array = []
-var character_meshes: Dictionary = {}
-
 func _ready() -> void:
+    selected_region = GameState.selected_region
     action_option.clear()
     action_option.add_item("Attack")
     action_option.add_item("Skill")
@@ -44,11 +46,12 @@ func _ready() -> void:
     create_enemy_team()
     spawn_characters()
     setup_camera_animation()
+    add_log("%s: battle has begun." % selected_region)
     refresh_all()
 
 func create_party_from_selection() -> void:
-    var classes = GameState.player_classes if GameState.player_classes else ["Mage", "Knight", "Ranger"]
-    var names = ["Astra", "Brann", "Lyra"]
+    var classes = GameState.player_classes if GameState.player_classes.size() == 3 else ["Mage", "Knight", "Ranger"]
+    var names = GameState.party_names if GameState.party_names.size() >= 3 else ["Astra", "Brann", "Lyra"]
     for i in range(min(3, classes.size())):
         party.append(create_character(names[i], classes[i], "player"))
 
@@ -58,14 +61,14 @@ func create_character(name: String, class_name: String, side: String) -> Diction
         "id": name.to_lower() + "_" + side,
         "name": name,
         "class_name": class_name,
-        "level": 1,
+        "level": max(1, GameState.level),
         "side": side,
-        "max_hp": stats["hp"],
-        "hp": stats["hp"],
-        "max_mana": stats["mana"],
-        "mana": stats["mana"],
-        "attack": stats["attack"],
-        "defense": stats["defense"],
+        "max_hp": stats["hp"] + (GameState.level - 1) * 8,
+        "hp": stats["hp"] + (GameState.level - 1) * 8,
+        "max_mana": stats["mana"] + (GameState.level - 1) * 2,
+        "mana": stats["mana"] + (GameState.level - 1) * 2,
+        "attack": stats["attack"] + (GameState.level - 1) * 3,
+        "defense": stats["defense"] + (GameState.level - 1),
         "speed": stats["speed"],
         "alive": true,
         "shield": 0,
@@ -76,7 +79,13 @@ func create_enemy_team() -> void:
     var enemy_classes = ["Berserker", "Witch", "Guardian"]
     var enemy_names = ["Vex", "Mira", "Gore"]
     for i in range(3):
-        enemies.append(create_character(enemy_names[i], enemy_classes[i], "enemy"))
+        var enemy = create_character(enemy_names[i], enemy_classes[i], "enemy")
+        enemy["level"] = max(1, GameState.level)
+        enemy["max_hp"] += (GameState.level - 1) * 10
+        enemy["hp"] += (GameState.level - 1) * 10
+        enemy["attack"] += (GameState.level - 1) * 4
+        enemy["defense"] += (GameState.level - 1)
+        enemies.append(enemy)
 
 func spawn_characters() -> void:
     var player_positions = [Vector3(-8, 0, -2), Vector3(-6, 0, 0), Vector3(-8, 0, 2)]
@@ -105,10 +114,7 @@ func create_character_mesh(character: Dictionary) -> MeshInstance3D:
     mesh_instance.mesh = capsule
 
     var material = StandardMaterial3D.new()
-    if character["side"] == "player":
-        material.albedo_color = Color.BLUE
-    else:
-        material.albedo_color = Color.RED
+    material.albedo_color = Color.BLUE if character["side"] == "player" else Color.RED
     mesh_instance.material_override = material
     mesh_instance.name = character["name"]
     return mesh_instance
@@ -153,9 +159,11 @@ func update_stats_display() -> void:
         child.queue_free()
 
     var stats = [
+        "Region: %s" % selected_region,
         "Turn: %d" % current_turn,
         "Alive (Blue): %d" % get_living("player").size(),
         "Alive (Red): %d" % get_living("enemy").size(),
+        "Gold: %d" % GameState.gold,
     ]
     for stat in stats:
         var label = Label.new()
@@ -214,7 +222,6 @@ func _on_execute_pressed() -> void:
 
     if not target.is_empty():
         execute_action(actor, action_index, target)
-        animate_attack(actor, target)
         if not battle_over:
             await get_tree().create_timer(1.0).timeout
             enemy_turn_phase()
@@ -249,14 +256,13 @@ func execute_action(actor: Dictionary, action_index: int, target: Dictionary) ->
         target["alive"] = false
         target["hp"] = 0
         add_log("%s has been defeated." % target["name"])
-        if target["mesh_node"]:
-            animate_death(target)
 
     check_victory()
 
 func apply_damage(target: Dictionary, amount: int) -> void:
     if target.is_empty():
         return
+
     var remaining = amount
     if target["shield"] > 0:
         var absorbed = min(target["shield"], remaining)
@@ -267,35 +273,10 @@ func apply_damage(target: Dictionary, amount: int) -> void:
     if target["hp"] <= 0:
         target["alive"] = false
 
-func animate_attack(attacker: Dictionary, target: Dictionary) -> void:
-    if not attacker.get("mesh_node") or not target.get("mesh_node"):
-        return
-
-    var attacker_mesh = attacker["mesh_node"]
-    var target_mesh = target["mesh_node"]
-    var original_pos = attacker_mesh.position
-
-    var tween = create_tween()
-    tween.set_ease(Tween.EASE_IN_OUT)
-    tween.set_trans(Tween.TRANS_QUAD)
-    tween.tween_property(attacker_mesh, "position", target_mesh.position + (attacker_mesh.position - target_mesh.position).normalized() * 0.5, 0.3)
-    tween.tween_property(attacker_mesh, "position", original_pos, 0.3)
-
-    effects_layer.spawn_hit_effect(target_mesh.position)
-
-func animate_death(character: Dictionary) -> void:
-    if not character.get("mesh_node"):
-        return
-    var mesh = character["mesh_node"]
-    var tween = create_tween()
-    tween.set_ease(Tween.EASE_IN)
-    tween.set_trans(Tween.TRANS_QUAD)
-    tween.tween_property(mesh, "position", mesh.position + Vector3(0, -2, 0), 1.0)
-    tween.tween_property(mesh, "modulate", Color.TRANSPARENT, 0.5)
-
 func enemy_turn_phase() -> void:
     if battle_over:
         return
+
     for enemy in get_living("enemy"):
         if not enemy["alive"]:
             continue
@@ -303,15 +284,14 @@ func enemy_turn_phase() -> void:
         var damage = max(8, enemy["attack"] + randi_range(0, 12) - target["defense"])
         apply_damage(target, damage)
         add_log("%s attacks %s for %s damage." % [enemy["name"], target["name"], damage])
-        animate_attack(enemy, target)
         if target["hp"] <= 0:
             target["alive"] = false
-            if target["mesh_node"]:
-                animate_death(target)
         if check_victory():
             return
-        await get_tree().create_timer(0.8).timeout
+
     current_turn += 1
+    GameState.last_message = "Battle resumed at turn %s." % current_turn
+    GameState.save_game()
 
 func check_victory() -> bool:
     var player_alive = get_living("player").size()
@@ -319,12 +299,14 @@ func check_victory() -> bool:
 
     if player_alive == 0:
         battle_over = true
-        add_log("Defeat!")
+        add_log("Defeat! The team falls in battle.")
+        GameState.award_defeat()
         return true
 
     if enemy_alive == 0:
         battle_over = true
-        add_log("Victory!")
+        add_log("Victory! The region is yours.")
+        GameState.award_victory()
         return true
 
     return false
@@ -334,16 +316,13 @@ func _on_auto_battle() -> void:
         return
 
     var actor = get_living("player")[0]
-    var action_index = 0
     var target = get_living("enemy")[0]
-    if actor["hp"] < actor["max_hp"] * 0.5:
+    var action_index = 1 if actor["mana"] >= 6 and randi_range(0, 100) > 40 else 0
+    if actor["hp"] < actor["max_hp"] * 0.5 and randi_range(0, 100) > 50:
         action_index = 2
-    elif actor["mana"] >= 6 and randi_range(0, 100) > 50:
-        action_index = 1
 
     execute_action(actor, action_index, target)
-    animate_attack(actor, target)
-    await get_tree().create_timer(1.0).timeout
     if not battle_over:
+        await get_tree().create_timer(1.0).timeout
         enemy_turn_phase()
         refresh_all()

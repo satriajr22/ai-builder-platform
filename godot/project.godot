@@ -8,6 +8,9 @@ config/name="RPG Arena Full"
 run/main_scene="res://scenes/MainMenu.tscn"
 config/features=PackedStringArray("4.2")
 
+[autoload]
+GameState="*res://scripts/GameState.gd"
+
 [rendering]
 renderer/rendering_method="forward_plus"
 renderer/anti_aliasing/quality/msaa_2d="off"
