@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RPG Arena Simulator</title>
+    <link rel="stylesheet" href="./rpg-game.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand-wrap">
+          <div class="brand-mark">R</div>
+          <div>
+            <small>Multiplayer Arena</small>
+            <h1>RPG Battle Simulator</h1>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button id="newBattleBtn" class="primary-btn" type="button">New Battle</button>
+          <button id="autoBattleBtn" class="secondary-btn" type="button">Auto Fight</button>
+        </div>
+      </header>
+
+      <main class="layout">
+        <section class="battle-panel">
+          <div class="arena-header">
+            <div>
+              <span class="eyebrow">Battle Field</span>
+              <h2>Crimson vs Obsidian</h2>
+            </div>
+            <div class="turn-pill">Turn <span id="turnCount">1</span></div>
+          </div>
+
+          <div class="teams-wrap">
+            <div class="team-block">
+              <div class="team-title blue">Blue Squad</div>
+              <div id="playerTeam" class="unit-grid"></div>
+            </div>
+
+            <div class="versus-wrap">
+              <div class="versus-tag">VS</div>
+              <div id="statusText" class="status-text">Select a command</div>
+            </div>
+
+            <div class="team-block red">
+              <div class="team-title red">Obsidian</div>
+              <div id="enemyTeam" class="unit-grid"></div>
+            </div>
+          </div>
+        </section>
+
+        <aside class="sidebar">
+          <div class="panel control-panel">
+            <h3>Commander Console</h3>
+
+            <label class="field-label" for="actorSelect">Active fighter</label>
+            <select id="actorSelect"></select>
+
+            <label class="field-label" for="actionSelect">Action</label>
+            <select id="actionSelect">
+              <option value="attack">Basic Attack</option>
+              <option value="skill">Skill Burst</option>
+              <option value="guard">Guard</option>
+              <option value="heal">Heal</option>
+            </select>
+
+            <label class="field-label" for="targetSelect">Target</label>
+            <select id="targetSelect"></select>
+
+            <div class="action-row">
+              <button id="executeActionBtn" class="primary-btn" type="button">Execute</button>
+              <button id="skipTurnBtn" class="ghost-btn" type="button">Skip</button>
+            </div>
+          </div>
+
+          <div class="panel stats-panel">
+            <h3>Match Stats</h3>
+            <div id="statsPanel" class="stats-grid"></div>
+          </div>
+
+          <div class="panel log-panel">
+            <h3>Battle Log</h3>
+            <ul id="battleLog" class="battle-log"></ul>
+          </div>
+        </aside>
+      </main>
+    </div>
+
+    <script src="./rpg-game.js"></script>
+  </body>
+</html>
