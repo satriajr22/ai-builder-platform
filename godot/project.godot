@@ -1,0 +1,12 @@
+; Engine configuration file.
+; It's best edited using the editor if you want to avoid any syntax errors.
+
+config_version=5
+
+[application]
+config/name="RPG Arena Simulator"
+run/main_scene="res://scenes/BattleArena.tscn"
+config/features=PackedStringArray("4.2")
+
+[rendering]
+renderer/rendering_method="Mobile"

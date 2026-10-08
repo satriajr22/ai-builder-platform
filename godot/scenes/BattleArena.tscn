@@ -1,0 +1,233 @@
+[gd_scene load_steps=2 format=3 uid="uid://b4h3mto3k6m5x"]
+
+[ext_resource type="Script" path="res://scripts/BattleArena.gd" id="1_3qf4u"]
+
+[node name="BattleArena" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_3qf4u")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.04, 0.08, 0.15, 1)
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Content" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+gap = 16
+
+[node name="TopBar" type="HBoxContainer" parent="Margin/Content"]
+layout_mode = 2
+alignment = 1
+
+[node name="Title" type="Label" parent="Margin/Content/TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "RPG Arena Simulator"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="NewBattleBtn" type="Button" parent="Margin/Content/TopBar"]
+layout_mode = 2
+text = "New Battle"
+
+[node name="AutoBtn" type="Button" parent="Margin/Content/TopBar"]
+layout_mode = 2
+text = "Auto Fight"
+
+[node name="ArenaRow" type="HBoxContainer" parent="Margin/Content"]
+layout_mode = 2
+size_flags_vertical = 3
+gap = 16
+
+[node name="PlayerPanel" type="Panel" parent="Margin/Content/ArenaRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="PlayerTitle" type="Label" parent="Margin/Content/ArenaRow/PlayerPanel"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 12.0
+offset_right = 160.0
+offset_bottom = 34.0
+text = "Blue Squad"
+
+[node name="PlayerUnits" type="VBoxContainer" parent="Margin/Content/ArenaRow/PlayerPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 42.0
+offset_right = -10.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+gap = 8
+
+[node name="CenterPanel" type="VBoxContainer" parent="Margin/Content/ArenaRow"]
+layout_mode = 2
+alignment = 1
+
+[node name="TurnLabel" type="Label" parent="Margin/Content/ArenaRow/CenterPanel"]
+layout_mode = 2
+text = "Turn: 1"
+horizontal_alignment = 1
+
+[node name="VSLabel" type="Label" parent="Margin/Content/ArenaRow/CenterPanel"]
+layout_mode = 2
+text = "VS"
+horizontal_alignment = 1
+
+[node name="StatusLabel" type="Label" parent="Margin/Content/ArenaRow/CenterPanel"]
+layout_mode = 2
+text = "Select a move"
+horizontal_alignment = 1
+
+[node name="EnemyPanel" type="Panel" parent="Margin/Content/ArenaRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="EnemyTitle" type="Label" parent="Margin/Content/ArenaRow/EnemyPanel"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 12.0
+offset_right = 160.0
+offset_bottom = 34.0
+text = "Obsidian"
+
+[node name="EnemyUnits" type="VBoxContainer" parent="Margin/Content/ArenaRow/EnemyPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 42.0
+offset_right = -10.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+gap = 8
+
+[node name="BottomRow" type="HBoxContainer" parent="Margin/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+gap = 16
+
+[node name="ControlPanel" type="Panel" parent="Margin/Content/BottomRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ControlVbox" type="VBoxContainer" parent="Margin/Content/BottomRow/ControlPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 12.0
+offset_right = -12.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ActorLabel" type="Label" parent="Margin/Content/BottomRow/ControlPanel/ControlVbox"]
+layout_mode = 2
+text = "Active fighter"
+
+[node name="ActorOption" type="OptionButton" parent="Margin/Content/BottomRow/ControlPanel/ControlVbox"]
+layout_mode = 2
+
+[node name="ActionLabel" type="Label" parent="Margin/Content/BottomRow/ControlPanel/ControlVbox"]
+layout_mode = 2
+text = "Action"
+
+[node name="ActionOption" type="OptionButton" parent="Margin/Content/BottomRow/ControlPanel/ControlVbox"]
+layout_mode = 2
+
+[node name="TargetLabel" type="Label" parent="Margin/Content/BottomRow/ControlPanel/ControlVbox"]
+layout_mode = 2
+text = "Target"
+
+[node name="TargetOption" type="OptionButton" parent="Margin/Content/BottomRow/ControlPanel/ControlVbox"]
+layout_mode = 2
+
+[node name="ExecuteBtn" type="Button" parent="Margin/Content/BottomRow/ControlPanel/ControlVbox"]
+layout_mode = 2
+text = "Execute"
+
+[node name="StatsPanel" type="Panel" parent="Margin/Content/BottomRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="StatsVbox" type="VBoxContainer" parent="Margin/Content/BottomRow/StatsPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 12.0
+offset_right = -12.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="StatsTitle" type="Label" parent="Margin/Content/BottomRow/StatsPanel/StatsVbox"]
+layout_mode = 2
+text = "Match Stats"
+
+[node name="StatsGrid" type="GridContainer" parent="Margin/Content/BottomRow/StatsPanel/StatsVbox"]
+layout_mode = 2
+columns = 2
+gap = 8
+
+[node name="LogPanel" type="Panel" parent="Margin/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="LogTitle" type="Label" parent="Margin/Content/LogPanel"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 12.0
+offset_right = 160.0
+offset_bottom = 34.0
+text = "Battle Log"
+
+[node name="LogText" type="RichTextLabel" parent="Margin/Content/LogPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 38.0
+offset_right = -12.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 2
+bbcode_enabled = true
+fit_content = true
